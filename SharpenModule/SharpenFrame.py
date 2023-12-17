@@ -57,7 +57,9 @@ class SharpenFrame(tk.Frame):
         self.image_open()
         self.image_sharpen()
     def browse_clicked(self):
-        self.filename = tk.filedialog.askopenfilename()
+        file = tk.filedialog.askopenfilename()
+        if file:
+            self.filename = file
         self.reloadBoth()
         pass
 
