@@ -1,4 +1,4 @@
-from SharpenFrame import SharpenFrame
+from .SharpenFrame import SharpenFrame
 
 if __name__ == "__main__":
     import tkinter as tk

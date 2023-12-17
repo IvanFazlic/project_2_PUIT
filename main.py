@@ -1,5 +1,6 @@
 import tkinter as tk
 from resavanjeSistema import LinearEquationSolver
+from SharpenModule import SharpenFrame
 
 
 def solve_system():
@@ -10,7 +11,8 @@ def solve_system():
 
 def show_image():
     # Logika za prikaz slike
-    pass
+    s = tk.Toplevel()
+    SharpenFrame(s, "SharpenModule/tiger.jpg")
 
 
 root = tk.Tk()
