@@ -16,7 +16,7 @@ def show_solution(r, a):
     v = tk.Scrollbar(r)
     v.pack(side='right', fill='y')
 
-    t = tk.Text(r, width=15, height=20, wrap=tk.NONE, yscrollcommand=v.set)
+    t = tk.Text(r, width=15, height=30, wrap=tk.NONE, yscrollcommand=v.set)
 
     m = 1 + 3
     n = 3
@@ -65,8 +65,18 @@ def show_solution(r, a):
 
         t.insert(tk.END, "Sledeca petlja, k={}\n".format(k + 1))
         t.pack(side=tk.TOP, fill=tk.X)
-    t.insert(tk.END, f"Konacna matrica je: \n{ispisi(n, m, a)}")
+    t.insert(tk.END, f"Konacna matrica je: \n{ispisi(n, m, a)}\n------------------------------------------\n\n")
     t.pack(side=tk.TOP, fill=tk.X)
+    t.insert(tk.END, "Resenje za X je: {:8.2f}\n".format(a[0][3]) +
+             "Resenje za Y je: {:8.2f}\n".format(a[1][3]) +
+             "Resenje za Z je: {:8.2f}\n\n".format(a[2][3]))
+    t.pack(side=tk.TOP, fill=tk.X)
+    t.insert(tk.END, f"Inverzna matrica je: \n")
+    t.insert(tk.END, "| {:8.2f}, {:8.2f}, {:8.2f} |\n".format(a[0][4], a[0][5], a[0][6]) +
+             "| {:8.2f}, {:8.2f}, {:8.2f} |\n".format(a[1][4], a[1][5], a[1][6]) +
+             "| {:8.2f}, {:8.2f}, {:8.2f} |\n".format(a[2][4], a[2][5], a[2][6]))
+    t.pack(side=tk.TOP, fill=tk.X)
+    v.config(command=t.yview)
 
 
 class LinearEquationSolver:
