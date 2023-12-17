@@ -5,7 +5,7 @@ from SharpenModule import SharpenFrame
 
 def solve_system():
     r = tk.Toplevel()
-    labels = ["x", "y", "z","="]
+    labels = ["x", "y", "z", "="]
     LinearEquationSolver(r, labels)
 
 
@@ -20,7 +20,6 @@ root.geometry('300x300')
 
 solve_system_button = tk.Button(root, text="Resavanje sistema jednacina", command=solve_system)
 solve_system_button.pack(pady=10)
-
 
 show_image_button = tk.Button(root, text="Prikaz slike", command=show_image)
 show_image_button.pack(pady=10)
