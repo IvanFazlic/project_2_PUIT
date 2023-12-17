@@ -83,7 +83,10 @@ class SharpenFrame(tk.Frame):
             self.imgObj = self.imgObjOrig.resize((self.width,
                                                   int(self.imgObjOrig.height/self.imgObjOrig.width*self.width)))
         img = copy.deepcopy(self.imgObj)
-        ImageDraw.Draw(img).text((10, 10), "Original", fill=(255, 0, 0), font=self.font)
+        try:
+            ImageDraw.Draw(img).text((10, 10), "Original", fill=(255, 0, 0), font=self.font)
+        except TypeError:
+            ImageDraw.Draw(img).text((10, 10), "Original", fill=(255,), font=self.font)
         image = ImageTk.PhotoImage(img)
         self.lblImage = tk.Label(self.images, image=image)
         self.lblImage.image = image
@@ -98,7 +101,10 @@ class SharpenFrame(tk.Frame):
             # shrpn = shrpn.filter(ImageFilter.Kernel((3, 3), self.sharpen_kernel)) # custom kernel
             shrpn = shrpn.filter(ImageFilter.SHARPEN)
         sharpened = copy.deepcopy(shrpn)
-        ImageDraw.Draw(sharpened).text((10, 10), "Sharpened", fill=(255, 0, 0), font=self.font)
+        try:
+            ImageDraw.Draw(sharpened).text((10, 10), "Sharpened", fill=(255, 0, 0), font=self.font)
+        except TypeError:
+            ImageDraw.Draw(sharpened).text((10, 10), "Sharpened", fill=(255,), font=self.font)
         image_sharpened = ImageTk.PhotoImage(sharpened)
         self.lblShrpn = tk.Label(self.images, image=image_sharpened)
         self.lblShrpn.image = image_sharpened
