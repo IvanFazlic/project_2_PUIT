@@ -10,6 +10,7 @@ class SharpenFrame(tk.Frame):
         # master setup
         self.master = master
         self.master.title("Primena sharpen filtera nad slikom")
+        self.master.minsize(283,200)
         # class setup
         self.filename = filename
         self.imgObjOrig = None
@@ -31,7 +32,6 @@ class SharpenFrame(tk.Frame):
         self.lblOrig.grid(row=1, column=0, sticky="w")
         self.btnBrowse = tk.Button(self.control, text="Otvori novu sliku", command=self.browse_clicked)
         self.btnBrowse.grid(row=0, column=3, rowspan=2, sticky="NS")
-        #self.control.pack(anchor="w", expand=True, fill=tk.X)
         self.control.grid(row=0, column=0,sticky="new")
         # images setup
         self.width = 400
@@ -47,13 +47,11 @@ class SharpenFrame(tk.Frame):
 
 
     def resize(self, event):
-        print(event.width, event.height)
+        #print(event.width, event.height)
         self.width=event.width-4
-        self.height = int((event.height-4)/2)
+        self.height = int((event.height-8)/2)
         self.reloadBoth()
     def reloadBoth(self):
-        #self.lblImage.pack_forget()
-        #self.lblShrpn.pack_forget()
         self.lblImage.grid_forget()
         self.lblShrpn.grid_forget()
         self.image_open()
@@ -64,14 +62,26 @@ class SharpenFrame(tk.Frame):
         pass
 
     def spinbox_changed(self):
-        #self.lblShrpn.pack_forget()
         self.lblShrpn.grid_forget()
         self.image_sharpen()
         pass
 
+    def fit(self):
+        image_AR = self.imgObjOrig.width/self.imgObjOrig.height
+        window_AR = self.width/self.height
+        if image_AR < window_AR:
+            return True
+        else:
+            return False
+
     def image_open(self):
         self.imgObjOrig = Image.open(self.filename)
-        self.imgObj = self.imgObjOrig.resize((self.width, int(self.imgObjOrig.height/self.imgObjOrig.width*self.width)))
+        if self.fit():
+            self.imgObj = self.imgObjOrig.resize((int(self.imgObjOrig.width / self.imgObjOrig.height * self.height)+1,
+                                                  self.height))
+        else:
+            self.imgObj = self.imgObjOrig.resize((self.width,
+                                                  int(self.imgObjOrig.height/self.imgObjOrig.width*self.width)))
         image = ImageTk.PhotoImage(self.imgObj)
         self.lblImage = tk.Label(self.images, image=image)
         self.lblImage.image = image
