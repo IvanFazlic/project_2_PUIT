@@ -1,49 +1,93 @@
 import tkinter as tk
+from tkinter import filedialog
 from PIL import Image, ImageTk, ImageFilter
 # import numpy as np
 
 
 class SharpenFrame(tk.Frame):
-    def __init__(self, master, filename="tiger.jpg"):
+    def __init__(self, master: tk.Toplevel, filename="tiger.jpg"):
         tk.Frame.__init__(self, master)
+        # master setup
         self.master = master
+        self.master.title("Primena sharpen filtera nad slikom")
+        # class setup
         self.filename = filename
+        self.imgObjOrig = None
         self.imgObj = None
         self.lblImage = None
         self.lblShrpn = None
-        self.txt = tk.Label(self, text="Hello")
-        self.txt.pack()
+        # control setup
+        self.control = tk.Frame(self)
+        self.control.columnconfigure(2, weight=1)
+        self.lblSharpenText = tk.Label(self.control, text="Multiplier za sharpen filter:")
+        self.lblSharpenText.grid(row=0, column=0)
         self.sharpen_multiplier = tk.IntVar()
         self.sharpen_multiplier.set(1)
         # self.sharpen_kernel = np.array(list(ImageFilter.SHARPEN().filterargs[3])) # custom kernel
-        self.spinbox = tk.Spinbox(self, command=self.spinbox_changed, from_=1, to=10, width=3,
+        self.spinbox = tk.Spinbox(self.control, command=self.spinbox_changed, from_=0, to=10, width=3,
                                   textvariable=self.sharpen_multiplier)
-        self.spinbox.pack()
+        self.spinbox.grid(row=0, column=1)
+        self.lblOrig = tk.Label(self.control, text="Originalna slika")
+        self.lblOrig.grid(row=1, column=0, sticky="w")
+        self.btnBrowse = tk.Button(self.control, text="Otvori novu sliku", command=self.browse_clicked)
+        self.btnBrowse.grid(row=0, column=3, rowspan=2, sticky="NS")
+        #self.control.pack(anchor="w", expand=True, fill=tk.X)
+        self.control.grid(row=0, column=0,sticky="new")
+        # images setup
+        self.width = 400
+        self.height = 226
+        self.images = tk.Frame(self)
         self.image_open()
         self.image_sharpen()
+        self.rowconfigure(1,weight=1)
+        self.columnconfigure(0, weight=1)
+        self.images.bind("<Configure>", self.resize)
+        self.images.grid(row=1, column=0, sticky="nsew")
         self.pack(expand=True, fill=tk.BOTH)
 
+
+    def resize(self, event):
+        print(event.width, event.height)
+        self.width=event.width-4
+        self.height = int((event.height-4)/2)
+        self.reloadBoth()
+    def reloadBoth(self):
+        #self.lblImage.pack_forget()
+        #self.lblShrpn.pack_forget()
+        self.lblImage.grid_forget()
+        self.lblShrpn.grid_forget()
+        self.image_open()
+        self.image_sharpen()
+    def browse_clicked(self):
+        self.filename = tk.filedialog.askopenfilename()
+        self.reloadBoth()
+        pass
+
     def spinbox_changed(self):
-        self.lblShrpn.pack_forget()
+        #self.lblShrpn.pack_forget()
+        self.lblShrpn.grid_forget()
         self.image_sharpen()
         pass
 
     def image_open(self):
-        self.imgObj = Image.open(self.filename).filter(ImageFilter.BLUR)
+        self.imgObjOrig = Image.open(self.filename)
+        self.imgObj = self.imgObjOrig.resize((self.width, int(self.imgObjOrig.height/self.imgObjOrig.width*self.width)))
         image = ImageTk.PhotoImage(self.imgObj)
-        self.lblImage = tk.Label(self, image=image)
+        self.lblImage = tk.Label(self.images, image=image)
         self.lblImage.image = image
-        self.lblImage.pack()
+        #self.lblImage.pack()
+        self.lblImage.grid(row=1, column=0,sticky="nsew")
         self.pack()
 
     def image_sharpen(self):
         # shrpn = self.imgObj.filter(ImageFilter.Kernel((3, 3), self.sharpen_kernel)) # custom kernel
-        shrpn = self.imgObj.filter(ImageFilter.SHARPEN)
-        for i in range(self.sharpen_multiplier.get()-1):
+        shrpn = self.imgObj
+        for i in range(self.sharpen_multiplier.get()):
             # shrpn = shrpn.filter(ImageFilter.Kernel((3, 3), self.sharpen_kernel)) # custom kernel
             shrpn = shrpn.filter(ImageFilter.SHARPEN)
         image_sharpened = ImageTk.PhotoImage(shrpn)
-        self.lblShrpn = tk.Label(self, image=image_sharpened)
+        self.lblShrpn = tk.Label(self.images, image=image_sharpened)
         self.lblShrpn.image = image_sharpened
-        self.lblShrpn.pack()
+        #self.lblShrpn.pack()
+        self.lblShrpn.grid(row=2,column=0,sticky="nsew")
         self.pack()
